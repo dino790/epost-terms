@@ -107,6 +107,7 @@ footer p{margin:0 0 6px}
 footer a{text-decoration:underline}
 .modal{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;
   background:rgba(15,20,28,.45);padding:0}
+.modal[hidden]{display:none}
 @media(min-width:760px){.modal{align-items:center;padding:24px}}
 .sheet{background:#fff;width:100%;max-width:900px;border-radius:16px 16px 0 0;display:flex;flex-direction:column;
   max-height:92vh;box-shadow:0 -4px 30px rgba(0,0,0,.22)}
@@ -401,7 +402,7 @@ function cardHtml(d){
   if(d.cat) meta.push('<span>' + esc(d.cat) + '</span>');
   if(d.note) meta.push('<span>' + esc(d.note) + '</span>');
   var acts = [];
-  if(d.txt) acts.push('<button type="button" data-open="' + esc(d.txt) + '" data-page="">약관 본문 보기</button>');
+  if(d.txt && d.chars > 0) acts.push('<button type="button" data-open="' + esc(d.txt) + '" data-page="">약관 본문 보기</button>');
   if(d.pdf) acts.push('<a href="' + esc(d.pdf) + '" target="_blank" rel="noopener">공시실 원문 PDF ↗</a>');
   return '<article class="card">' +
     '<div class="ctop">' + loc + lab + scan + miss + '</div>' +
