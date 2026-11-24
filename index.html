@@ -305,7 +305,7 @@ function findHits(text, q, maxHits){
   return {count: count, hits: hits};
 }
 function cutAtPageBreak(s){
-  var i = s.search(/---\s*PAGE\s+\d+\s*---/);
+  var i = s.search(/---\s*PAGE\s+\d+/);     /* 잘린 '--- PAGE 21' 까지 포함해 자른다 */
   return i >= 0 ? s.slice(0, i) : s;
 }
 function snippetHtml(text, hit, page){
