@@ -340,13 +340,17 @@ function markHtml(text, q, cap){
 
 /* ---------- 본문 캐시 ---------- */
 var docCache = new Map(), docBytes = 0;
+/* 파일별 판본(txt_bytes) — 본문이 갱신되면 URL이 달라져 브라우저 캐시의 옛 사본을 쓰지 않는다 */
+var fileVer = new Map();
 function getDoc(file, signal){
   if(docCache.has(file)){
     var d0 = docCache.get(file);
     docCache.delete(file); docCache.set(file, d0);        /* LRU 갱신 */
     return Promise.resolve(d0);
   }
-  return fetch('txt/' + encodeURIComponent(file), {signal: signal, cache: 'force-cache'}).then(function(res){
+  var v = fileVer.get(file);
+  var url = 'txt/' + encodeURIComponent(file) + (v ? '?v=' + v : '');
+  return fetch(url, {signal: signal, cache: 'force-cache'}).then(function(res){
     if(!res.ok) throw new Error('HTTP ' + res.status + ' · ' + file);
     return res.text();
   }).then(function(text){
@@ -755,6 +759,7 @@ function boot(){
     return res.json();
   }).then(function(raw){
     S.items = raw.map(normalize);
+    S.items.forEach(function(d){ if(d.txt && d.bytes) fileVer.set(d.txt, d.bytes); });
     var files = uniqueFiles(S.items);
     $('hTotal').textContent = nfmt(S.items.length);
     $('sTotal').textContent = nfmt(S.items.length);
